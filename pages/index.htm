@@ -2,11 +2,29 @@ url = "/"
 layout = "main"
 title = "Главная"
 
+[FilterSplits]
+
 [resources]
 js[] = "pages/index.js"
 css[] = "pages/index.css"
 ==
+<?php
+use Lovata\Shopaholic\Models\Product;
+use Lovata\Shopaholic\Models\Category;
+use Lovata\Shopaholic\Models\Brand;
+function onStart()
+{
+//$element = Product::orderBy('name', 'desc')->where('name', 'Колпино')->find(1);  
+$list = Product::orderBy('id', 'asc')->get(); 
+$listCategory = Category::orderBy('id', 'asc')->get();
+$listBrands = Brand::orderBy('id', 'asc')->get();
+$this['listofCategories'] = $listCategory;
+$this['listofBrands'] = $listBrands;
+}
+?>
+==
 <div class="intro">
+  {% component 'FilterSplits' %}
 	<div class="swiper mySwiper">
     <div class="swiper-wrapper">
       <div class="swiper-slide">Slide 12222</div>
@@ -22,3 +40,47 @@ css[] = "pages/index.css"
     <div class="swiper-pagination"></div>
   </div>
 </div>
+
+<br>
+<div class="margin">
+{% for category in listofCategories %}
+{% if category.id < 4 %}
+<div class="categories__block">
+  <div class="gallery-img__inner" >
+    <img src="themes/airtech/assets/images/src/wall_splits.png" width="466" height="410" alt="">
+  </div>
+  <div class="text__title">
+  {{ category.name }}
+  </div>
+
+  {{ category.preview_text }}
+
+</div>
+{% endif %} 
+
+{% endfor %}
+
+   {% for brand in listofBrands %}
+   <div class="brands__block">
+      <img src="themes/airtech/assets/images/src/general_logo.png">
+      {{ brand.preview_text }}
+   </div>
+   {% endfor %}
+<br>
+
+{% set splits = FilterSplits.splits %}
+{% for split in splits %}
+<div class="categories__block--items">
+    {{ split.name }}
+    <br>
+    Площадь помещения {{ split.area }}
+    <br>
+    Мощность {{ split.power }}
+    <br>
+    Уровень шума {{ split.noise_level }}
+</div>
+{% endfor %}
+
+</div>
+
+
